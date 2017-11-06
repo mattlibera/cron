@@ -12,7 +12,7 @@
  * Please find more copyright information in the LICENSE file
  */
 
-namespace Liebig\Cron;
+namespace Mattlibera\Cron;
 
 /**
  * Cron
@@ -155,6 +155,9 @@ class Cron {
             // Get the rundate
             $runDate = new \DateTime();
 
+            // Get Manager class
+            $managerClass = config('cron.classes.Manager');
+
             // Fire event before the Cron run will be executed
             \Event::fire('cron.beforeRun', array($runDate->getTimestamp()));
 
@@ -180,7 +183,7 @@ class Cron {
 
                         if (self::isDatabaseLogging()) {
                             // Create a new cronmanager database object with runtime -1
-                            $cronmanager = new\Liebig\Cron\Models\Manager();
+                            $cronmanager = new $managerClass;
                             $cronmanager->rundate = $runDate;
                             $cronmanager->runtime = -1;
                             $cronmanager->save();
@@ -216,7 +219,7 @@ class Cron {
             // Getting last run time only if database logging is enabled
             if (self::isDatabaseLogging()) {
                 // Get the time (in seconds) between this and the last run and save this to $timeBetween
-                $lastManager = \Liebig\Cron\Models\Manager::orderBy('rundate', 'DESC')->take(1)->get();
+                $lastManager = $managerClass::orderBy('rundate', 'DESC')->take(1)->get();
                 if (!empty($lastManager[0])) {
                     $lastRun = new \DateTime($lastManager[0]->rundate);
                     $timeBetween = $runDate->getTimestamp() - $lastRun->getTimestamp();
@@ -289,7 +292,7 @@ class Cron {
             if (self::isDatabaseLogging()) {
 
                 // Create a new cronmanager database object for this run and save it
-                $cronmanager = new\Liebig\Cron\Models\Manager();
+                $cronmanager = new $managerClass;
                 $cronmanager->rundate = $runDate;
                 $cronmanager->runtime = $afterAll - $beforeAll;
                 $cronmanager->save();
@@ -402,8 +405,10 @@ class Cron {
      */
     private static function saveJobsFromArrayToDatabase($jobArray, $managerId) {
 
+        $jobClass = config('cron.classes.Job');
+
         foreach ($jobArray as $job) {
-            $jobEntry = new \Liebig\Cron\Models\Job();
+            $jobEntry = new $jobClass;
             $jobEntry->name = $job['name'];
 
             // Get the type of the returned value
@@ -726,12 +731,15 @@ class Cron {
         // If the value is not set or equals 0 delete old database entries is disabled
         if (!empty($deleteDatabaseEntriesAfter)) {
 
+            // get Manager class
+            $managerClass = config('cron.classes.Manager');
+
             // Get the current time and subtract the hour values
             $now = new \DateTime();
             date_sub($now, date_interval_create_from_date_string($deleteDatabaseEntriesAfter . ' hours'));
 
             // Get the old manager entries which are expired
-            $oldManagers = \Liebig\Cron\Models\Manager::where('rundate', '<=', $now->format('Y-m-d H:i:s'))->get();
+            $oldManagers = $managerClass::where('rundate', '<=', $now->format('Y-m-d H:i:s'))->get();
 
             foreach ($oldManagers as $manager) {
 
@@ -901,7 +909,7 @@ class Cron {
     private static function getConfig($key, $defaultValue = NULL) {
         $configValue = $defaultValue;
         if (self::$laravelVersion >= 5) {
-           $configValue = \Config::get('liebigCron.' . $key);
+           $configValue = \Config::get('cron.' . $key);
         } else {
            $configValue = \Config::get('cron::' . $key);
         }
@@ -917,7 +925,7 @@ class Cron {
      */
     private static function setConfig($key, $value) {
         if (self::$laravelVersion >= 5) {
-            \Config::set('liebigCron.' . $key, $value);
+            \Config::set('cron.' . $key, $value);
         } else {
             \Config::set('cron::' . $key, $value);
         }

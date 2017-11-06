@@ -1,6 +1,6 @@
 <?php
 
-namespace Liebig\Cron;
+namespace Mattlibera\Cron;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;

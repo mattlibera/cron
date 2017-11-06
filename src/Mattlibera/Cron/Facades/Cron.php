@@ -1,6 +1,6 @@
 <?php
 
- namespace Liebig\Cron\Facades;
+ namespace Mattlibera\Cron\Facades;
  
  use Illuminate\Support\Facades\Facade;
  

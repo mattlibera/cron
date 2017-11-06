@@ -1,6 +1,6 @@
 <?php 
 
-namespace Liebig\Cron;
+namespace Mattlibera\Cron;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -22,14 +22,14 @@ class Laravel5ServiceProvider extends ServiceProvider {
 		
             // Publish config
             $configPath = __DIR__ . '/../../config/config.php';
-            $this->publishes([$configPath => config_path('liebigCron.php')], 'config');
+            $this->publishes([$configPath => config_path('cron.php')], 'config');
 	
 	
             // Build in Cron run route
             \Route::get('cron.php', function() {
             
                 // Get security key from config
-                $cronkeyConfig = \Config::get('liebigCron.cronKey');
+                $cronkeyConfig = \Config::get('cron.cronKey');
 
                 // If no security key is set in the config, this route is disabled
                 if (empty($cronkeyConfig)) {
@@ -74,7 +74,7 @@ class Laravel5ServiceProvider extends ServiceProvider {
 
             $this->app->booting(function() {
                         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-                        $loader->alias('Cron', 'Liebig\Cron\Facades\Cron');
+                        $loader->alias('Cron', 'Mattlibera\Cron\Facades\Cron');
                     });
 
             $this->app->singleton('cron::command.run', function () {

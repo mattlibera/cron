@@ -35,6 +35,11 @@ Cron can be used for easily performing cron jobs in Laravel. If you want to run 
 <a name="raison"></a>
 ## Raison d’être
 
+### Preamble
+This is a fork of the original package, designed specifically to be more configurable. You can change table names and class names of the Job and Manager objects in this fork.
+
+This fork does NOT support PHP 5, or Laravel 5.4 or below. It is strictly for Laravel 5.5+ and PHP 7.0+.
+
 ### Simplicity
 The aim is to create a simple way to define cron jobs with Laravel. Creating cron jobs with Cron is easy because this tool provides you with a lot of events that you can use to manage all your jobs. For creating a job you only need a job name, a cron expression and a function which will be called as soon as the time has come. Of course PHP is only running if you call it, so you need something in addition which starts Cron.
 
@@ -60,18 +65,18 @@ At last, Cron is my personal way to manage job scheduling. I am a web applicatio
 
 ### Laravel 5
 
-1.  Add `"liebig/cron": "dev-master"` to your `/path/to/laravel/composer.json` file at the `"require":` section (Find more about composer at http://getcomposer.org/)
-2.  Run the `composer update liebig/cron --no-dev` command in your shell from your `/path/to/laravel/` directory
-3.  Add `'Liebig\Cron\Laravel5ServiceProvider'` to your `'providers'` array in the `/path/to/laravel/config/app.php` file
+1.  Add `"mattlibera/cron": "dev-master"` to your `/path/to/laravel/composer.json` file at the `"require":` section (Find more about composer at http://getcomposer.org/)
+2.  Run the `composer update mattlibera/cron --no-dev` command in your shell from your `/path/to/laravel/` directory
+3.  Add `'Mattlibera\Cron\Laravel5ServiceProvider'` to your `'providers'` array in the `/path/to/laravel/config/app.php` file
 4.  Migrate the database with running the command `php artisan migrate --path=vendor/liebig/cron/src/migrations`
-5.  Publish the configuration file with running the command `php artisan vendor:publish` - now you find the Cron configuration file at `/path/to/laravel/config/liebigCron.php` and this file won't be overwritten at any update
+5.  Publish the configuration file with running the command `php artisan vendor:publish` - now you find the Cron configuration file at `/path/to/laravel/config/cron.php` and this file won't be overwritten at any update
 6.  Now you can use `Cron` everywhere for free
 
 ### Laravel 4
 
 1.  Add `"liebig/cron": "dev-master"` to your `/path/to/laravel/composer.json` file at the `"require":` section (Find more about composer at http://getcomposer.org/)
 2.  Run the `composer update liebig/cron --no-dev` command in your shell from your `/path/to/laravel/` directory
-3.  Add `'Liebig\Cron\CronServiceProvider'` to your `'providers'` array in the `/path/to/laravel/app/config/app.php` file
+3.  Add `'Mattlibera\Cron\CronServiceProvider'` to your `'providers'` array in the `/path/to/laravel/app/config/app.php` file
 4.  Migrate the database with running the command `php artisan migrate --package="liebig/cron"`
 5.  Publish the configuration file with running the command `php artisan config:publish liebig/cron` - now you find the Cron configuration file at `/path/to/laravel/app/config/packages/liebig/cron` and this file won't be overwritten at any update
 6.  Now you can use `Cron` everywhere for free
@@ -87,7 +92,7 @@ Cron is designed to work out of the box without the need of configuration. To en
 You can use the Cron set methods (e.g. `setDatabaseLogging`, `setRunInterval`) to change Cron's behaviour. This changes are temporary and the set methods have to be called every time.
 
 ### Config file
-The behaviour values will be loaded from a config file. You can change this values easily by editing in Laravel 5 the `/path/to/laravel/app/config/liebigCron.php` file and in Laravel 4 the `/path/to/laravel/app/config/packages/liebig/cron/config.php` file. This is the more permanent way. If you only want to change settings for one run with conditions, we recommend to use the setter methods.
+The behaviour values will be loaded from a config file. You can change this values easily by editing in Laravel 5 the `/path/to/laravel/app/config/cron.php` file and in Laravel 4 the `/path/to/laravel/app/config/packages/liebig/cron/config.php` file. This is the more permanent way. If you only want to change settings for one run with conditions, we recommend to use the setter methods.
 
 **NOTE**: All values set via method will overwrite the values loaded from config file.
 
@@ -591,7 +596,7 @@ By default Cron prevents overlapping. This means that only one Cron instance wil
 * Minor bug fixes
 
 ### 2013/11/01 - v0.9.3
-* Adding facade for Cron - you can use `Cron` instead of `\Liebig\Cron\Cron` now
+* Adding facade for Cron - you can use `Cron` instead of `\Mattlibera\Cron\Cron` now
 * Adding facade test cases
 
 ---

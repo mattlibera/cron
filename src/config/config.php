@@ -1,7 +1,7 @@
 <?php
 
-return array(
-    
+return [
+
     // Interval defines the time in minutes between two run method calls - in other words, the time between the Cron route or command will be called
     'runInterval' => 1,
     
@@ -24,6 +24,18 @@ return array(
     'inTimeCheck' => true,
     
     // Cron application key for securing the integrated Cron run route - if the value is empty, the route is disabled 
-    'cronKey' => ''
+    'cronKey' => '',
+
+    // table names
+    'tables' => [
+        'Job' => 'cron_job',
+        'Manager' => 'cron_manager'
+    ],
+
+    // classes
+    'classes' => [
+        'Job' => 'Mattlibera\Cron\Models\Job',
+        'Manager' => 'Mattlibera\Cron\Models\Manager'
+    ],
     
-);
+];
