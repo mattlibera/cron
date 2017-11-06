@@ -96,6 +96,9 @@ The behaviour values will be loaded from a config file. You can change this valu
 
 **NOTE**: All values set via method will overwrite the values loaded from config file.
 
+### Reconfiguring table names and classes
+Occasionally you may want to change the table names used by Job and Manager classes, or you may want to change the actual classes used (to extend functionality of this package using inheritance). In the config file, you can now do this with the provided arrays.
+
 ---
 
 <a name="example"></a>
@@ -141,27 +144,6 @@ class AppServiceProvider extends ServiceProvider {
     }
 }
 ```
-
-#### Laravel 4 - global.php
-```php
-Event::listen('cron.collectJobs', function() {
-    Cron::add('example1', '* * * * *', function() {
-                    // Do some crazy things unsuccessfully every minute
-                    return 'No';
-                });
-
-    Cron::add('example2', '*/2 * * * *', function() {
-        // Do some crazy things successfully every two minute
-        return null;
-    });
-
-    Cron::add('disabled job', '0 * * * *', function() {
-        // Do some crazy things successfully every hour
-    }, false);
-});
-```
-
-Inside the anonymous function you can use all the Laravel and Cron functions. In the next step you have to configure the route or command which will start Cron.
 
 ### Using Cron's integrated route
 If you don't have shell access to your server, you can easily use an online cronjob service (Google knows some good provider). This provider will run Cron's route in a defined interval. The Cron route has to be protected because if someone else than the service provider invokes it, our jobs will be executed too often. For that reason we need a security key in addition to the route path. This key can be generated with the `php artisan cron:keygen` command call and has to be set in the Cron config file at the key `cronKey`.
@@ -543,6 +525,11 @@ By default Cron prevents overlapping. This means that only one Cron instance wil
 <a name="changelog"></a>
 ## Changelog
 
+### 2017/11/06 - 1.3
+* Matt's fork begins.
+* Re-namespaced
+* Added config variables for table names and class names
+
 ### 2017/09/13 - 1.2
 * Adding support for Laravel 5.5
 * Adding support for Laravel 5.4
@@ -606,6 +593,8 @@ By default Cron prevents overlapping. This means that only one Cron instance wil
 The MIT License (MIT)
 
 Copyright (c) 2013 - 2016 Marc Liebig
+
+And... (c) 2017 Matt Libera (at least the parts I can claim)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
