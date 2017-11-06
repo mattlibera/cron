@@ -25,5 +25,12 @@
             "Mattlibera\\Cron": "src/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Mattlibera\\Cron\\Laravel5ServiceProvider"
+            ]
+        }
+    }
 }
