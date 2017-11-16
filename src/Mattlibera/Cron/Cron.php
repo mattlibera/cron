@@ -323,21 +323,21 @@ class Cron {
                 $cronmanager->runtime = $afterAll - $beforeAll;
                 $cronmanager->save();
 
-                // If the Cron run in time check is enabled, verify the time between the current and the last Cron run ($timeBetween) and compare it with the run interval
-                if (self::isInTimeCheck()) {
+                // If the Cron run in time check is enabled, and this is not a manual run, verify the time between the current and the last Cron run ($timeBetween) and compare it with the run interval
+                if (self::isInTimeCheck() && is_null($jobName)) {
                     $inTime = false;
                     // Check if the run between this and the last run is in time (30 seconds tolerance) and log this event
                     if ($timeBetween === -1) {
-                        self::log('notice', 'Cron run with manager id ' . $cronmanager->id . ' has no previous managers.');
+                        self::log('notice', 'Cron run with manager id ' . $cronmanager->id . ' - no previous managers.');
                         $inTime = -1;
                     } elseif (($runInterval * 60) - $timeBetween < -30) {
-                        self::log('error', 'Cron run with manager id ' . $cronmanager->id . ' is with ' . $timeBetween . ' seconds between last run too late.');
+                        self::log('error', 'Cron run with manager id ' . $cronmanager->id . ' - ' . $timeBetween . ' seconds between last run (too late).');
                         $inTime = false;
                     } elseif (($runInterval * 60) - $timeBetween > 30) {
-                        self::log('error', 'Cron run with manager id ' . $cronmanager->id . ' is with ' . $timeBetween . ' seconds between last run too fast.');
+                        self::log('error', 'Cron run with manager id ' . $cronmanager->id . ' - ' . $timeBetween . ' seconds between last run (too fast).');
                         $inTime = false;
                     } else {
-                        self::log('info', 'Cron run with manager id ' . $cronmanager->id . ' is with ' . $timeBetween . ' seconds between last run in time.');
+                        self::log('info', 'Cron run with manager id ' . $cronmanager->id . ' - ' . $timeBetween . ' seconds between last run (in time).');
                         $inTime = true;
                     }
                 } else {
@@ -356,7 +356,7 @@ class Cron {
                 if (empty($errorJobs)) {
                     self::log('info', 'The cron run with the manager id ' . $cronmanager->id . ' was finished without errors.');
                 } else {
-                    self::log('error', 'The cron run with the manager id ' . $cronmanager->id . ' was finished with ' . count($errorJobs) . ' errors.');
+                    self::log('error', 'The cron run with the manager id ' . $cronmanager->id . ' was finished with ' . count($errorJobs) . ' error(s).');
                 }
 
                 // Check for old database entires and delete them
@@ -367,7 +367,7 @@ class Cron {
                 if (empty($errorJobs)) {
                     self::log('info', 'Cron run was finished without errors.');
                 } else {
-                    self::log('error', 'Cron run was finished with ' . count($errorJobs) . ' errors.');
+                    self::log('error', 'Cron run was finished with ' . count($errorJobs) . ' error(s).');
                 }
             }
 
@@ -495,7 +495,7 @@ class Cron {
 
         // Check parameter
         if (!is_string($level) || !is_string($message)) {
-            throw new \InvalidArgumentException('Function paramter $level or $message is not of the data type string.');
+            throw new \InvalidArgumentException('Function parameter $level or $message is not of the data type string.');
         }
 
         // If a Monolog logger object is set, use it
@@ -609,13 +609,13 @@ class Cron {
      *
      * @static
      * @param  bool $bool Set to enable or disable Laravels logging
-     * @throws \InvalidArgumentException if the $bool function paramter is not a boolean
+     * @throws \InvalidArgumentException if the $bool function parameter is not a boolean
      */
     public static function setLaravelLogging($bool) {
         if (is_bool($bool)) {
             self::setConfig('laravelLogging', $bool);
         } else {
-            throw new \InvalidArgumentException('Function paramter $bool with value "' . $bool . '" is not a boolean.');
+            throw new \InvalidArgumentException('Function parameter $bool with value "' . $bool . '" is not a boolean.');
         }
     }
 
@@ -642,13 +642,13 @@ class Cron {
      *
      * @static
      * @param  bool $bool Set to enable or disable database logging
-     * @throws \InvalidArgumentException if the $bool function paramter is not a boolean
+     * @throws \InvalidArgumentException if the $bool function parameter is not a boolean
      */
     public static function setDatabaseLogging($bool) {
         if (is_bool($bool)) {
             self::setConfig('databaseLogging', $bool);
         } else {
-            throw new \InvalidArgumentException('Function paramter $bool with value "' . $bool . '" is not a boolean.');
+            throw new \InvalidArgumentException('Function parameter $bool with value "' . $bool . '" is not a boolean.');
         }
     }
 
@@ -678,13 +678,13 @@ class Cron {
      *
      * @static
      * @param  bool $bool Set to enable or disable logging error jobs only
-     * @throws \InvalidArgumentException if the $bool function paramter is not a boolean
+     * @throws \InvalidArgumentException if the $bool function parameter is not a boolean
      */
     public static function setLogOnlyErrorJobsToDatabase($bool) {
         if (is_bool($bool)) {
             self::setConfig('logOnlyErrorJobsToDatabase', $bool);
         } else {
-            throw new \InvalidArgumentException('Function paramter $bool with value "' . $bool . '" is not a boolean.');
+            throw new \InvalidArgumentException('Function parameter $bool with value "' . $bool . '" is not a boolean.');
         }
     }
 
@@ -724,13 +724,13 @@ class Cron {
      *
      * @static
      * @param  int $minutes Set the interval in minutes
-     * @throws \InvalidArgumentException if the $minutes function paramter is not an integer
+     * @throws \InvalidArgumentException if the $minutes function parameter is not an integer
      */
     public static function setRunInterval($minutes) {
         if (is_int($minutes)) {
             self::setConfig('runInterval', $minutes);
         } else {
-            throw new \InvalidArgumentException('Function paramter $minutes with value "' . $minutes . '" is not an integer.');
+            throw new \InvalidArgumentException('Function parameter $minutes with value "' . $minutes . '" is not an integer.');
         }
     }
 
@@ -756,13 +756,13 @@ class Cron {
      *
      * @static
      * @param  int $hours optional Set the delete time in hours, if this value is 0 the delete old database entries function will be disabled - default value is 0
-     * @throws \InvalidArgumentException if the $hours function paramter is not an integer
+     * @throws \InvalidArgumentException if the $hours function parameter is not an integer
      */
     public static function setDeleteDatabaseEntriesAfter($hours = 0) {
         if (is_int($hours)) {
             self::setConfig('deleteDatabaseEntriesAfter', $hours);
         } else {
-            throw new \InvalidArgumentException('Function paramter $hours with value "' . $hours . '" is not an integer.');
+            throw new \InvalidArgumentException('Function parameter $hours with value "' . $hours . '" is not an integer.');
         }
     }
 
@@ -832,12 +832,12 @@ class Cron {
      * @param  string $jobname The name of the job which should be enabled
      * @param  bool $enable The trigger for enable (true) or disable (false) the job with the given name
      * @return bool Return true if job was enabled successfully or false if no job with the $jobname parameter was found
-     * @throws \InvalidArgumentException if the $enable function paramter is not a boolean
+     * @throws \InvalidArgumentException if the $enable function parameter is not a boolean
      */
     public static function setEnableJob($jobname, $enable = true) {
         // Check patameter
         if (!is_bool($enable)) {
-            throw new \InvalidArgumentException('Function paramter $enable with value "' . $enable . '" is not a boolean.');
+            throw new \InvalidArgumentException('Function parameter $enable with value "' . $enable . '" is not a boolean.');
         }
 
         // Walk through the cron jobs and find the job with the given name

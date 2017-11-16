@@ -14,7 +14,7 @@ return [
     // Enable or disable logging error jobs only
     'logOnlyErrorJobsToDatabase' => false,
     
-    // Delte old database entries after how many hours - if this value is set to 0, no entries will be deleted
+    // Delete old database entries after how many hours - if this value is set to 0, no entries will be deleted
     'deleteDatabaseEntriesAfter' => 240,
     
     // Prevent job overlapping - if Cron is still running it could not be started a second time
