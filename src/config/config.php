@@ -37,5 +37,9 @@ return [
         'Job' => 'Mattlibera\Cron\Models\Job',
         'Manager' => 'Mattlibera\Cron\Models\Manager'
     ],
+
+    // Loggy support
+    'loggyLogging' => false,
+    'loggyChannel' => 'cron',
     
 ];

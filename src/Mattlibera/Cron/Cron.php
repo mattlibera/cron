@@ -13,6 +13,7 @@
  */
 
 namespace Mattlibera\Cron;
+use Tolawho\Loggy\Facades\Loggy;
 
 /**
  * Cron
@@ -558,6 +559,44 @@ class Cron {
                     break;
                 case "emergency":
                     \Log::emergency($message);
+                    break;
+                default:
+                    throw new \InvalidArgumentException('Invalid log $level parameter with string ' . $level . '.');
+            }
+        }
+
+        // Finally, Loggy integration
+
+        $loggyLogging = self::getConfig('loggyLogging');
+
+        if (is_bool($loggyLogging) && $loggyLogging) {
+
+            $channel = self::getConfig('loggyChannel');
+
+            switch (strtolower($level)) {
+                case "debug":
+                    Loggy::debug($channel, $message);
+                    break;
+                case "info":
+                    Loggy::info($channel, $message);
+                    break;
+                case "notice":
+                    Loggy::notice($channel, $message);
+                    break;
+                case "warning":
+                    Loggy::warning($channel, $message);
+                    break;
+                case "error":
+                    Loggy::error($channel, $message);
+                    break;
+                case "critical":
+                    Loggy::critical($channel, $message);
+                    break;
+                case "alert":
+                    Loggy::alert($channel, $message);
+                    break;
+                case "emergency":
+                    Loggy::emergency($channel, $message);
                     break;
                 default:
                     throw new \InvalidArgumentException('Invalid log $level parameter with string ' . $level . '.');
