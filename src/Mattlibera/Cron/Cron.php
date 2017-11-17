@@ -13,7 +13,7 @@
  */
 
 namespace Mattlibera\Cron;
-use Tolawho\Loggy\Facades\Loggy;
+use Mattlibera\Loggy\Facades\Loggy;
 
 /**
  * Cron
